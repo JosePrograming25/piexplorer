@@ -2,22 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-@keyframes show {
-    from {
-        opacity: 0;
-        scale: 10%;
-    }
-    to {
-        opacity: 1;
-        scale:100%
-    }
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+display: none; }
+
+.description-image-show {
+  opacity: 0;
 }
 
-img {
-    view-timeline-name: --reveal;
-    animation: show;
-    animation-fill-mode: both;
-    animation-timeline: --reveal;
-    animation-range: entry 25% cover 50%;
+.show-description:hover .description-image-show {
+  opacity: 1;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 

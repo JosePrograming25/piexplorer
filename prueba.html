@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hover Example</title>
+<style>
+  /* Estilo del elemento objetivo */
+  .contenedor {
+    width: 200px;
+    height: 200px;
+    background-color: brown;
+  }
+  .imagen {
+    width: 100px;
+    height: 100px;
+    background-color: blue;
+  }
+
+  .contenedor:hover .imagen {
+    transform: scale(1.8);
+  }
+
+  .contenedor {
+    overflow: hidden;
+  }
+</style>
+</head>
+<body>
+
+<div class="contenedor">
+  <div class="imagen">
+  </div>
+</div>
+
+</body>
+</html>
