@@ -5,15 +5,16 @@ import ImageList from './Components/ImageList'
 import ViewDetail from './Components/ViewDetail'
 
 const App = () => {
-  const [images, setImages] = useState([])
-  const [pag, setPag] = useState(1)
-  const [loading, setLoading] = useState(false)
-  const [context, setContext] = useState('random')
-  const [query, setQuery] = useState('')
-  const [maxPag, setMaxPag] = useState(1)
-  const [noImages, setNoImages] = useState(false)
-  const [viewDetail, setViewDetail] = useState(false)
-  const observer = useRef()
+  const [images, setImages] = useState([]) // se almacenan las imágenes
+  const [pag, setPag] = useState(1) // se almacena la página actual
+  const [loading, setLoading] = useState(false) // se almacena el estado de carga
+  const [context, setContext] = useState(['random']) // se almacena el contexto de búsqueda
+  const [query, setQuery] = useState('') // se almacena el término de búsqueda
+  const [maxPag, setMaxPag] = useState(1) // se almacena el número máximo de páginas de la búsqueda
+  const [noImages, setNoImages] = useState(false) // se especifica si no hay más imágenes
+  const [viewDetail, setViewDetail] = useState(false) // se almacena la imagen a visualizar
+  const [error, setError] = useState(null) // se almacena el error
+  const observer = useRef() // obse
   const lastImageRef = useRef()
   const resetSearch = useRef(null)
 
@@ -40,19 +41,23 @@ const App = () => {
   const getImages = async () => {
     try {
       setLoading(true)
-      const response = await axios.get(contextDate[context].link, contextDate[context].head)
+      const response = await axios.get(contextDate[context[0]].link, contextDate[context[0]].head)
       const data = response.data
+      setError(null)
 
-      if (!data.results) {
+      if (!data.results) { // si no es una busqueda de imagenes añade las imagenes aleatorias
         setImages((prevImg) => [...prevImg, ...data])
       } else {
         setImages((prevImg) => [...prevImg, ...data.results])
-        setMaxPag(data.total_pages)
+        setMaxPag(data.total_pages) // indica el maximo de imagenes de la busqueda
       }
 
-      setLoading(false)
+      setLoading(false) // termino de cargar la api
     } catch (error) {
-      console.error('Error al buscar imágenes:', error)
+      if (error.status === 403) {
+        setError('no results found')
+      }
+
       setLoading(false)
     }
   }
@@ -67,29 +72,31 @@ const App = () => {
 
     observer.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
-        if (context === 'search') {
+        if (context[0] === 'search') {
           if (pag === maxPag) setNoImages(true)
-          if (pag < maxPag) {
+          if (pag < maxPag) { // maxPag nos dice si hay mas paginas a renderizar
             setPag((prev) => prev + 1)
           }
         } else {
           setPag((prev) => prev + 1)
         }
       }
-    })
+    }) // evalua si el usuario llego al final de la pagina para cargar mas imagenes
 
     if (lastImageRef.current) observer.current.observe(lastImageRef.current)
   }, [loading, pag, maxPag])
 
   const handleSearch = (searchTerm) => {
-    setContext('search')
+    const copia = ['search']
+    setContext([...copia])
     setQuery(searchTerm)
     setPag(1)
     setImages([])
   }
 
-  const handlerClick = e => {
-    setContext('random')
+  const handlerClick = e => { // volvemos a la pagina principal
+    const copia = ['random']
+    setContext([...copia])
     setPag(1)
     setImages([])
     getImages()
@@ -113,8 +120,9 @@ const App = () => {
       <ImageList viewDetail={handlerViewDetail} imagesList={images} reference={lastImageRef} load={loading} />
       {noImages &&
         <p className='z-50 text-xl font-[#333] py-2 px-6  rounded-xl shadow-lg shadow-black--500/40 text-center mb-11 pb-4 pt-16'>
-          search for {query} over
+          end of {query} the search
         </p>}
+      {error && <p className='z-50 text-xl font-[#333] py-2 px-6  rounded-xl shadow-lg shadow-black--500/40 text-center mb-11 pb-4 pt-16'>{error}</p>}
     </>
   )
 }

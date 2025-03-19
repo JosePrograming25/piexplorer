@@ -1,10 +1,8 @@
 const ViewDetail = ({ image, viewDetail }) => {
-  console.log(image)
-
   return (
-    <div className='w-full h-full bg-[#000000ee] fixed z-50 flex items-center justify-center flex-col'>
-      <div className='w-3/4 flex justify-end'><span onClick={() => viewDetail(false)} className='text-white font-bold pb-2 cursor-pointer'>X</span></div>
-      <img className='w-3/4' src={image.urls.regular} alt='' />
+    <div className='w-full h-full bg-[#000000ee] fixed z-50 flex items-center justify-center flex-col p-10'>
+      <span onClick={() => viewDetail(false)} className='text-white font-bold cursor-pointer absolute top-1 right-3'>X</span>
+      <img className='max-h-full' src={image.urls.regular} alt={image.user.name} />
     </div>
   )
 }
